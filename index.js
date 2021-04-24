@@ -1,6 +1,5 @@
 const express = require("express");
-const router = new express.Router();
-// const app = express();
+const app = express();
 const cors = require("cors");
 require("./modules/mongoose");
 
@@ -20,14 +19,14 @@ const Client = require("./modules/client");
 const { ReplSet } = require("mongodb");
 
 // -----------globals------------------------
-router.use(cors());
+app.use(cors());
 const port = process.env.PORT || 3007;
-router.use(express.json());
+app.use(express.json());
 // ----------------------------------------
 
 // ----------Routes-------------------------
 // ?Get all users
-router.get("/bankReact/users", (req, res) => {
+app.get("/bankReact/users", (req, res) => {
 	Client.find({})
 		.then((clients) => {
 			res.status(200).send(clients);
@@ -37,7 +36,7 @@ router.get("/bankReact/users", (req, res) => {
 		});
 });
 // ?Get all accounts
-router.get("/bankReact/accounts", (req, res) => {
+app.get("/bankReact/accounts", (req, res) => {
 	BankAccount.find({})
 		.then((accounts) => {
 			res.status(200).send(accounts);
@@ -48,7 +47,7 @@ router.get("/bankReact/accounts", (req, res) => {
 });
 
 // ?Get info Single User
-router.post("/bankReact/users/getclient", (req, res) => {
+app.post("/bankReact/users/getclient", (req, res) => {
 	Client.findOne(req.body)
 		.then((client) => {
 			res.status(200).send(client);
@@ -58,7 +57,7 @@ router.post("/bankReact/users/getclient", (req, res) => {
 		});
 });
 // ?Get info Single account
-router.post("/bankReact/users/getaccount", (req, res) => {
+app.post("/bankReact/users/getaccount", (req, res) => {
 	BankAccount.findOne(req.body)
 		.then((accout) => {
 			res.status(200).send(accout);
@@ -68,7 +67,7 @@ router.post("/bankReact/users/getaccount", (req, res) => {
 		});
 });
 // ?Get info transactions of email
-router.post("/bankReact/users/transacrions/email", (req, res) => {
+app.post("/bankReact/users/transacrions/email", (req, res) => {
 	TransActions.find(req.body)
 		.then((accouts) => {
 			if (accouts.length > 0) {
@@ -83,7 +82,7 @@ router.post("/bankReact/users/transacrions/email", (req, res) => {
 });
 
 // ?Add User
-router.post("/bankReact/users", async (req, res) => {
+app.post("/bankReact/users", async (req, res) => {
 	try {
 		const user = await createUser(req.body);
 		res.status(200).send("user was created");
@@ -92,7 +91,7 @@ router.post("/bankReact/users", async (req, res) => {
 	}
 });
 // ?Deposit
-router.post("/bankReact/users/deposit", async (req, res) => {
+app.post("/bankReact/users/deposit", async (req, res) => {
 	try {
 		const reposed = await deposits(req.body);
 		await res.status(200).send(reposed);
@@ -101,7 +100,7 @@ router.post("/bankReact/users/deposit", async (req, res) => {
 	}
 });
 // ?EditCredit
-router.post("/bankReact/users/credit-update", async (req, res) => {
+app.post("/bankReact/users/credit-update", async (req, res) => {
 	try {
 		const respond = await updateCredit(req.body);
 		res.status(200).send(respond);
@@ -111,7 +110,7 @@ router.post("/bankReact/users/credit-update", async (req, res) => {
 });
 
 // ?Withdraw
-router.post("/bankReact/users/withdraw", async (req, res) => {
+app.post("/bankReact/users/withdraw", async (req, res) => {
 	try {
 		const resp = await withdraw(req.body);
 		res.status(200).send(resp);
@@ -121,7 +120,7 @@ router.post("/bankReact/users/withdraw", async (req, res) => {
 });
 
 // ?Transfer
-router.post("/bankReact/users/transfer", async (req, res) => {
+app.post("/bankReact/users/transfer", async (req, res) => {
 	try {
 		const resp = await transferMoney(req.body);
 		res.status(200).send(resp);
@@ -131,7 +130,7 @@ router.post("/bankReact/users/transfer", async (req, res) => {
 });
 
 // ?get all transactions logs
-router.get("/bankReact/users/transacrions/", async (req, res) => {
+app.get("/bankReact/users/transacrions/", async (req, res) => {
 	try {
 		const resp = await TransActions.find({});
 		res.status(200).send(resp);
@@ -140,7 +139,7 @@ router.get("/bankReact/users/transacrions/", async (req, res) => {
 	}
 });
 // ?get all transactions by email
-router.post("/bankReact/users/transacrions/", async (req, res) => {
+app.post("/bankReact/users/transacrions/", async (req, res) => {
 	try {
 		const resp = await TransActions.find(req.body);
 		res.status(200).send(resp);
@@ -149,7 +148,7 @@ router.post("/bankReact/users/transacrions/", async (req, res) => {
 	}
 });
 //--------listener----------------------
-router.listen(port, () => {
+app.listen(port, () => {
 	console.log(
 		"   ▐▀▄      ▄▀▌   ▄▄▄▄▄▄▄             \n   ▌▒▒▀▄▄▄▄▀▒▒▐▄▀▀▒██▒██▒▀▀▄         \n  ▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄        \n ▌▒▒▒▒▒▒▒▒▒▒▒▒▒▄▒▒▒▒▒▒▒▒▒▒▒▒▒▀▄     \n▀█▒▒█▌▒▒█▒▒▐█▒▒▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▌    \n▀▌▒▒▒▒▒▀▒▀▒▒▒▒▒▀▀▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐  ▄▄\n▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▌▄█▒█\n▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐▒█▀ \n▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐▀  \n▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▌    \n▌▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐     \n▐▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▌     \n ▌▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▐      \n ▐▄▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▄▌      \n   ▀▄▄▀▀▀▀▄▄▀▀▀▀▀▀▄▄▀▀▀▀▀▀▄▄▀       \n \n"
 	);
