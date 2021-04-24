@@ -4,8 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"build": "npm i validator && npm i mongoose && npm i cors && npm i express",
-		"start": "node index.js"
+		"build": "npm i validator && npm i mongoose && npm i cors && npm i express"
 	},
 	"repository": {
 		"type": "git",
