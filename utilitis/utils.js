@@ -1,6 +1,7 @@
 const Client = require("../modules/client");
 const BankAccount = require("../modules/bankAccount");
 const Transaction = require("../modules/Transactions");
+const bcrypt = require("bcryptjs");
 
 const createUser = async (ari) => {
 	try {
@@ -21,7 +22,7 @@ const createUser = async (ari) => {
 				console.log(e.message);
 			});
 
-		return "client was created";
+		return client;
 	} catch (e) {
 		throw new Error(e.message);
 	}
